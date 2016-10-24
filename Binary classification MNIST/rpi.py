@@ -4,7 +4,7 @@ import time
 import digit_recognition
 import marshal
 import pickle
-
+import binascii
 class sendThread (threading.Thread):
     def __init__(self, threadID, name, x):
         threading.Thread.__init__(self)
@@ -12,7 +12,7 @@ class sendThread (threading.Thread):
         self.name = name
 	self.x = x
     def run(self):
-        	sendData(self.name, x)
+        	sendData(self.name, self.x)
 
 class recvThread (threading.Thread):
     def __init__(self, threadID, name):
@@ -33,7 +33,7 @@ def sendData(threadName, x):
 	except:
 		s.close()
 		time.sleep(10)
-		sendData(threadName)
+		sendData(x)
 	print "src:rpi connected to destn:server"
 	#i = 0
 	#while True:
@@ -79,13 +79,12 @@ def recvData(threadName):
 	s.close()
 	
  
-X = pickle.dumps(digit_recognition.parse_images("train-images-idx3-ubyte"))
+X = pickle.dumps(binascii.hexlify(digit_recognition.parse_images("train-images-idx3-ubyte")))
 y = pickle.dumps(digit_recognition.parse_labels("train-labels-idx1-ubyte"))
 
-
-
-thread1 = sendThread(1, "sendThread", X)
+#X = [1,2,3,4,111,6,7,8,9,10]
+#print X
 #thread2 = recvThread(2, "recvThread-rpi")
-
+thread1 = sendThread(1, "sendThread", X)
 thread1.start()
 #thread2.start()
