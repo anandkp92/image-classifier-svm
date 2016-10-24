@@ -9,7 +9,7 @@ def parse_images(filename):
     sx,sy = struct.unpack('>ii', f.read(8))
     X = []
     #print size
-    for i in range(10000):
+    for i in range(10):
 	#print i
        im =  struct.unpack('B'*(sx*sy), f.read(sx*sy))
        X.append([float(x)/256.0 for x in im]);
@@ -20,7 +20,7 @@ def parse_labels(filename):
     f = open(filename,"rb");
     magic,size = struct.unpack('>ii', f.read(8))
     #print size
-    size = 10000    
+    size = 10
     #f.close()
     return np.array(struct.unpack('B'*size, f.read(size)))
 
