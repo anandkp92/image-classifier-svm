@@ -1,20 +1,27 @@
 import numpy as np
 import struct
 import math
+import time
 
 def parse_images(filename):
     f = open(filename,"rb");
     magic,size = struct.unpack('>ii', f.read(8))
     sx,sy = struct.unpack('>ii', f.read(8))
     X = []
-    for i in range(size):
-        im =  struct.unpack('B'*(sx*sy), f.read(sx*sy))
-        X.append([float(x)/256.0 for x in im]);
+    #print size
+    for i in range(10000):
+	#print i
+       im =  struct.unpack('B'*(sx*sy), f.read(sx*sy))
+       X.append([float(x)/256.0 for x in im]);
+    f.close()
     return np.array(X);
 
 def parse_labels(filename):
     f = open(filename,"rb");
     magic,size = struct.unpack('>ii', f.read(8))
+    #print size
+    size = 10000    
+    #f.close()
     return np.array(struct.unpack('B'*size, f.read(size)))
 
 def error(X, y, theta):
@@ -88,12 +95,18 @@ def stochastic_grad_descent(X, y, lam, loss, T, alpha):
         j += 1                          # Increment and begin next turn
     return theta
 '''
+st = time.time()
+print "before everything"
 X = parse_images("train-images-idx3-ubyte")
+print "parse images done"
 y = parse_labels("train-labels-idx1-ubyte")
+print "parse labels done"
 y0 = 1.*(y == 1) - 1.*(y != 1)
 theta = stochastic_grad_descent(X, y0, 1e-3, loss_svm, 10, 0.001)
 print error(X, y0, theta)
 ### 0.00783333
 theta = grad_descent(X, y0, 1e-3, loss_svm, 10, 5.0)
 print error(X, y0, theta)
+et = time.time()
+print str(et-st)
 ### 0.01906666
