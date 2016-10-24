@@ -1,6 +1,8 @@
 import numpy as np
 import struct
 import math
+import server
+import threading
 
 def parse_images(filename):
     f = open(filename,"rb");
@@ -43,53 +45,11 @@ def stochastic_grad_descent(X, y, lam, loss, T, alpha):
             l,g = loss(X[i:i+1,:], y[i:i+1], theta)
             theta -= alpha*(g + lam*theta)
     return theta
-'''
-# Logistic Regression
-def loss_logistic(X,y,theta):
-    numExamples = X.shape[0]
-    yx = np.dot(np.transpose(y),X)
-    yx.shape = (1,784)
-    yxtheta = np.dot(yx,theta)
-    #print yxtheta
-    l = math.log(1 + math.exp(-yxtheta[0]))            # Calculate loss
-    g = -yx/(1 + yxtheta[0])    # Calculate gradient
-    g.shape = (784,1)
-    return l, g
-
-# Support Vector Machine
-def loss_svm(X,y,theta):
-    numExamples = X.shape[0]
-    yx = np.dot(np.transpose(y),X)
-    yxtheta = np.dot(yx,theta)
-    l = max(0,1-yxtheta/numExamples)
-    g = -yx*(1*(yxtheta/numExamples < 1))
-    g.shape = (784,1)
-    return l,g
-
-def grad_descent(X, y, lam, loss, T, alpha):
-    j = 0
-    theta = np.zeros((X.shape[1],1))
-    numExamples = X.shape[0]
-    while j < T:
-        l, g = loss(X,y,theta)
-        sumOfGradients = g 
-        avgOfGradients = sumOfGradients/numExamples
-        theta = theta - alpha * (avgOfGradients + lam * theta)
-        j += 1
-    #print theta.shape
-    return theta
-        
-def stochastic_grad_descent(X, y, lam, loss, T, alpha):
-    j = 0                               # Iterator for T turns
-    theta = np.zeros((X.shape[1],1))    # Initialize theta = 0
-    while j < T:                        # Iterate for T turns
-        l, g = loss(X, y, theta)        # Get the loss and gradient
-        theta = theta - alpha * (g + lam * theta)
-        j += 1                          # Increment and begin next turn
-    return theta
-'''
+    
 X = parse_images("train-images-idx3-ubyte")
 y = parse_labels("train-labels-idx1-ubyte")
+
+
 y0 = 1.*(y == 1) - 1.*(y != 1)
 theta = stochastic_grad_descent(X, y0, 1e-3, loss_svm, 10, 0.001)
 print error(X, y0, theta)

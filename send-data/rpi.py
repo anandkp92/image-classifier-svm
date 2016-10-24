@@ -58,7 +58,7 @@ def recvData(threadName):
 	s.close()
 
 thread1 = sendThread(1, "sendThread-rpi")
-thread2 = recvThread(2, "recvThread-rpi")
+#thread2 = recvThread(2, "recvThread-rpi")
 
 thread1.start()
-thread2.start()
+#thread2.start()
